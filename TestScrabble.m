@@ -1,6 +1,5 @@
 function output = TestScrabble()
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+% Detect scrabble board, in test images, using trained ANN
 load('parameters.mat')
 Name = {'ScrabbleImages\',...
     'EmptyBoard1.JPG','EmptyBoard2.JPG','EmptyBoard3.JPG',...
@@ -10,7 +9,7 @@ Name = {'ScrabbleImages\',...
     'SecondWord1.JPG','SecondWord2.JPG','ThirdWord1.JPG',...
     'ThirdWord2.JPG'};
 for i = 2:17
-    I = imresize(imread([Name{1},Name{i}]),0.2);
+    I = imresize(imread([Name{1},Name{i}]),0.5);
     [L,J] = TestOnIm(I,par_letter,par_board);
     
     subplottight(1,2,1),imshow(L,[])
@@ -50,13 +49,9 @@ J = imclose((L(:,:,1)>0.75)&(L(:,:,2)>0.3)&(L(:,:,3)>0.4),...
 A = regionprops(J,'Area');[~,ind] = max([A.Area]);
 J = 1*(J == ind);
 J = imdilate(J,strel('disk',3));
-J = (1 - J.*I(:,:,1))*255;%J = uint8(J > 0);
-% ocrResults = ocr(J,'TextLayout','Block');
+J = (1 - J.*I(:,:,1))*255;
 out2 = J;
-% loc = ocrResults.CharacterConfidences;
-% out2 = insertObjectAnnotation(J, 'rectangle',...
-%     ocrResults.CharacterBoundingBoxes(~isnan(loc),:),...
-%     loc(~isnan(loc)));
+
 end
 
 function g = sigmoid(z)
